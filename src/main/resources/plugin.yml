@@ -1,0 +1,3 @@
+name: CommanderBukkitTest
+version: '${version}'
+main: net.octopvp.commanderbukkittest.CommanderBukkitTest
