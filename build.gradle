@@ -31,8 +31,14 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-}
 
+}
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
@@ -47,3 +53,16 @@ processResources {
         expand props
     }
 }
+task copyPlugin(type: Copy) {
+    def jarName = 'CommanderBukkitTest-' + version + '.jar'
+    println(jarName)
+    from 'build/libs/' + jarName
+    into 'run/plugins'
+}
+task runDev(type: JavaExec) {
+    classpath = files('run/paper.jar')
+    //run the serverJar, main from MANIFEST.MF
+    //args('nogui')
+    workingDir(file('run'))
+}
+runDev.dependsOn(copyPlugin)

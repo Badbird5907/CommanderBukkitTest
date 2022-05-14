@@ -13,7 +13,12 @@ public final class CommanderBukkitTest extends JavaPlugin {
     public void onEnable() {
         commander = BukkitCommander.getCommander(this)
                 .register(new TestCommand())
-                ;
+        ;
+
+        commander.getCommandMap().forEach((k,v) -> {
+            getLogger().info("Registered command: " + k + " | " + v);
+        });
+        getLogger().info("Registered " + commander.getCommandMap().size() + " commands.");
     }
 
     @Override
